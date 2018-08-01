@@ -1,17 +1,39 @@
-
-
+<!-- source is https://bl.ocks.org/mbostock/4060366 -->
 <!DOCTYPE html>
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-<html>
+<htm>
+<meta charset="utf-8">
+<style>
+
+.links {
+  stroke: #000;
+  stroke-opacity: 0.2;
+}
+
+.polygons {
+  fill: none;
+  stroke: #000;
+}
+
+.polygons :first-child {
+  fill: #f00;
+}
+
+.sites {
+  fill: #000;
+  stroke: #fff;
+}
+
+.sites :first-child {
+  fill: #fff;
+}
+
+</style>
+
 <body>
-<h>Honey Production in the United States from 1998-2012</h>
-<h1>Let's get started. There will be 3 questions in this trivia.</h1>
-<p>Which US state has the most expensive average price per pound of honey?</p>
+
 
 <script>
-
-data =
+var hp = 
     [
   {
     "state": "AL",
@@ -6273,89 +6295,150 @@ data =
     "prodvalue": 4769000,
     "year": 2012
   }
-]
+];
 </script>
-<button onclick="myFunction()">Virginia</button>
-<button onclick="b()">Nevada</button>
-<button onclick="c()">Illnois</button>
-<button onclick="d()">New York</button>
-</body>
 
+
+<h>Honey Production in the United States from 1998-2012</h>
+<h1>Let's get started. There will be 3 questions in this trivia.</h1>
+<p>Which US state has the most expensive average price per pound of honey?</p>
+<button onclick= correct()>Nevada</button>
+<button onclick="incorrect()">Kentucky</button>
+<button onclick="incorrect()">Arizona</button>
+<button onclick="incorrect()">Illinois</button>
+<button onclick="updateVis()">View Bar Chart</button>
+<p>Which US state has the highest stock prices?</p>
+<button onclick="correct()">California</button>
+<button onclick="incorrect()">New York</button>
+<button onclick="incorrect()">North Dekota</button>
+<button onclick="incorrect()">Minnesota</button>
+<button onclick="updateVis2()">View Bar Chart (2)</button>
+<p>Which US state has the highest total production of honey?</p>
+<button onclick="correct()">California</button>
+<button onclick="incorrect()">North Dakota</button>
+<button onclick="incorrect()">Ohio</button>
+<button onclick="incorrect()">Maryland</button>
+<button onclick="updateVis3()">View Bar Chart (3)</button>
+
+<button onclick="location.href='https://github.com/marlesque/DataVisFinal/blob/master/README.md'" type="button">About the Visualization</button>
+<p>The parameter are the states that have the greatest average price for a pound of honey, the largest total production, and stock prices. This is meant to be interactive as you have to select a button which represents the right answer. I've designed this to be an interactive trivia, where the viewer may click on different buttons. You can try as many times as you want. As a reference, you may clink on View Bar Chart to get the resources that will help you get to the right answer. You have to scroll all the way to the bottom to yield a result.
+
+Thank you.</p>
 <script>
-function myFunction() {
+function correct() {
     document.getElementById("demo").innerHTML = "You are correct!";
 }
 </script>
 <script>
-function b() {
-    document.getElementById("demo").innerHTML = "Sorry, please try again! I made something to help you with this question. Please see this link: https://public.tableau.com/profile/melanie.qu1712#!/vizhome/honeyproduction_0/Dashboard1?publish=yes";
-}
-</script>
-<script>
-function c() {
-    document.getElementById("demo").innerHTML = "Sorry, please try again! I made something to help you with this question. Please see this link: https://public.tableau.com/profile/melanie.qu1712#!/vizhome/honeyproduction_0/Dashboard1?publish=yes";
-}
-</script>
-<script>
-function d() {
-    document.getElementById("demo").innerHTML = "Sorry, please try again! I made something to help you with this question. Please see this link: https://public.tableau.com/profile/melanie.qu1712#!/vizhome/honeyproduction_0/Dashboard1?publish=yes";
+function incorrect() {
+    document.getElementById("demo").innerHTML = "Sorry, please try again! I made something to help you with this question. Please click on View Bar Chart";
 }
 </script>
 
+<svg id= "viz" width="1000" height="500"></svg>
+<svg id= "viz2" width= "1000" height= "500"></svg>
+<svg id= "viz3" width= "1000" height= "500"></svg>
+<p id= "demo"></p>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+function updateVis2() {
+var stockprices= [];
+var stateArray= [];
+length= hp.length
+var i;
+for (i=0; i<length; i++){
+    stockprices.push(hp[i]['stocks']);
+    stateArray.push(hp[i]['state']);
+}
+document.getElementById("viz2").innerHTML=stockprices;
+var svgContainer = d3.select("body").append("svg")
+                                   .attr("width", 750)
+                                   .attr("height", 10000000);
+svgContainer.selectAll("rect").data(stockprices).enter().append("rect")
+                 .attr("width", 20)
+                 .attr("height", function (d) { return d*0.00005; })
+                 .attr("x", function (d, i) {return 25*i; })
+                 .attr("y", function(d, i) {return 20; })
+                 .attr("fill", "steelblue");
+svgContainer.selectAll("text")        
+                    .data(stateArray)
+                    .enter()
+                    .append("text")
+                    .attr("class","label")
+                    .attr("x", (function(d, i) { return 25*i; } ))
+                    .attr("y", (function(d, i) { return 15; }))
+                    .attr("dy", ".50em")
+                    .text(function(d, i) { return d; });   
 
-<p id="demo"></p>
-<p>Which US state has the highest stock prices?</p>
-<button onclick="myFunction2()">South Dakota</button>
-<button onclick="b2()">Nevada</button>
-<button onclick="c2()">New Jersey</button>
-<button onclick="d2()">California</button>
-<script>
-function myFunction2() {
-    document.getElementById("demo2").innerHTML = "You are correct!";
+ 
 }
 </script>
 <script>
-function b2() {
-    document.getElementById("demo2").innerHTML = "Sorry, please try again! I made something to help you with this question. Please see this link: https://public.tableau.com/profile/melanie.qu1712#!/vizhome/honeyproduction_0/Dashboard1?publish=yes";
+    function updateVis3() {
+var totalprod= [];
+var stateArray= [];
+length= hp.length
+var i;
+for (i=0; i<length; i++){
+    totalprod.push(hp[i]['totalprod']);
+    stateArray.push(hp[i]['state']);
+}
+document.getElementById("viz3").innerHTML=totalprod;
+var svgContainer = d3.select("body").append("svg")
+                                   .attr("width", 750)
+                                   .attr("height", 1000000);
+svgContainer.selectAll("rect").data(totalprod).enter().append("rect")
+                 .attr("width", 20)
+                 .attr("height", function (d) { return d*0.000004; })
+                 .attr("x", function (d, i) {return 25*i; })
+                 .attr("y", function(d, i) {return 20; })
+                 .attr("fill", "steelblue");
+svgContainer.selectAll("text")        
+                    .data(stateArray)
+                    .enter()
+                    .append("text")
+                    .attr("class","label")
+                    .attr("x", (function(d, i) { return 25*i; } ))
+                    .attr("y", (function(d, i) { return 15; }))
+                    .attr("dy", ".50em")
+                    .text(function(d, i) { return d; });   
+
+ 
 }
 </script>
 <script>
-function c2() {
-    document.getElementById("demo2").innerHTML = "Sorry, please try again! I made something to help you with this question. Please see this link: https://public.tableau.com/profile/melanie.qu1712#!/vizhome/honeyproduction_0/Dashboard1?publish=yes";
+
+function updateVis() {
+var ppl= [];
+var stateArray= [];
+length= hp.length
+var i;
+for (i=0; i<length; i++){
+    ppl.push(hp[i]['priceperlb']);
+    stateArray.push(hp[i]['state']);
 }
-</script>
-<script>
-function d2() {
-    document.getElementById("demo2").innerHTML = "Sorry, please try again! I made something to help you with this question. Please see this link: https://public.tableau.com/profile/melanie.qu1712#!/vizhome/honeyproduction_0/Dashboard1?publish=yes";
+document.getElementById("viz").innerHTML=ppl;
+var svgContainer = d3.select("body").append("svg")
+                                   .attr("width", 750)
+                                   .attr("height", 405);
+svgContainer.selectAll("rect").data(ppl).enter().append("rect")
+                 .attr("width", 20)
+                 .attr("height", function (d) { return 100*d; })
+                 .attr("x", function (d, i) {return 25*i; })
+                 .attr("y", function(d, i) {return 20; })
+                 .attr("fill", "steelblue");
+svgContainer.selectAll("text")        
+                    .data(stateArray)
+                    .enter()
+                    .append("text")
+                    .attr("class","label")
+                    .attr("x", (function(d, i) { return 25*i; } ))
+                    .attr("y", (function(d, i) { return 15; }))
+                    .attr("dy", ".50em")
+                    .text(function(d, i) { return d; });   
+
 }
+
 </script>
-<p id="demo2"></p>
-<p>Which US state has the highest total production of honey?</p>
-<button onclick="myFunction3()">North Dakota</button>
-<button onclick="b3()">Washington</button>
-<button onclick="c3()">Arizona</button>
-<button onclick="d3()">Tenessee</button>
-<script>
-function myFunction3() {
-    document.getElementById("demo3").innerHTML = "You are correct!";
-}
-</script>
-<script>
-function b3() {
-    document.getElementById("demo3").innerHTML = "Sorry, please try again! I made something to help you with this question. Please see this link: https://public.tableau.com/profile/melanie.qu1712#!/vizhome/honeyproduction_0/Dashboard1?publish=yes";
-}
-</script>
-<script>
-function c3() {
-    document.getElementById("demo3").innerHTML = "Sorry, please try again! I made something to help you with this question. Please see this link: https://public.tableau.com/profile/melanie.qu1712#!/vizhome/honeyproduction_0/Dashboard1?publish=yes";
-}
-</script>
-<script>
-function d3() {
-    document.getElementById("demo3").innerHTML = "Sorry, please try again! I made something to help you with this question. Please see this link: https://public.tableau.com/profile/melanie.qu1712#!/vizhome/honeyproduction_0/Dashboard1?publish=yes";
-}
-</script>
-<p id="demo3"></p>
 </body>
-
 </html>
